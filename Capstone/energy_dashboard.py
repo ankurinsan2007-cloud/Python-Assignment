@@ -1,7 +1,7 @@
-#Name: Madhav Taneja
+#Name: Ankur
 #Class: B.tech CSE (AI ML) 1st year 
-#Section-B
-#Roll No: 2501730282
+#Section-C
+#Roll No: 2501730242
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -10,7 +10,6 @@ from pathlib import Path
 print("Working directory:", os.getcwd())
 os.makedirs("output", exist_ok=True)
 
-# Task 1: Data Ingestion and Validation
 
 data_folder = "data"     
 path_obj = Path(data_folder)
@@ -27,21 +26,18 @@ for file in all_files:
     except Exception as e:
         print("Error loading:", file.name, "->", e)
 
-# merge everything
 if len(combined_data) == 0:
     print("No data found.")
     exit()
 
 df = pd.concat(combined_data, ignore_index=True)
 
-# clean timestamp column
 df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce")
 df = df.dropna(subset=["timestamp"])
 
 print("\nData Loaded Successfully. Preview:\n")
 print(df.head())
 
-# Task 2: Core Aggregation Logic
 
 def calculate_daily_totals(data):
     return data.resample("D", on="timestamp")["kwh"].sum()
@@ -58,8 +54,6 @@ build_summary = building_wise_summary(df)
 
 print("\n--- Building Summary ---\n")
 print(build_summary)
-
-# Task 3: Object Oriented Modelling
 
 class MeterReading:
     def __init__(self, timestamp, kwh):
@@ -104,25 +98,20 @@ print("\n--- OOP Building Reports ---\n")
 for report in manager.generate_all_reports():
     print(report)
 
-# Task 4: Visualization using Matplotlib
-
 plt.figure(figsize=(14, 10))
 
-# Subplot 1 – Daily Trend Line
 plt.subplot(3, 1, 1)
 plt.plot(daily_totals.index, daily_totals.values)
 plt.title("Daily Electricity Usage")
 plt.xlabel("Date")
 plt.ylabel("kWh")
 
-# Subplot 2 – Weekly Comparison Bar Chart
 plt.subplot(3, 1, 2)
 plt.bar(weekly_totals.index.astype(str), weekly_totals.values)
 plt.title("Weekly Electricity Usage")
 plt.xlabel("Week")
 plt.ylabel("kWh")
 
-# Subplot 3 – Scatter Plot (all buildings)
 plt.subplot(3, 1, 3)
 plt.scatter(df["timestamp"], df["kwh"], alpha=0.5)
 plt.title("Scatter Plot — All Readings")
@@ -135,7 +124,6 @@ plt.close()
 
 print("\nDashboard saved as dashboard.png")
 
-# Task 5: Exporting clean data
 
 df.to_csv("output/cleaned_energy_data.csv", index=False)
 build_summary.to_csv("output/building_summary.csv")
@@ -152,4 +140,5 @@ with open("output/summary.txt", "w") as f:
 
 print("Export complete: cleaned_energy_data.csv, building_summary.csv, summary.txt")
 print("Project Finished.")
+
 plt.savefig("output/dashboard.png")
